@@ -1,0 +1,28 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+apply from: '../buildCom/commonbuildktx.gradle'
+apply from: '../buildCom/publish.gradle'
+
+android {
+
+    defaultConfig {
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
+    }
+}
+
+dependencies {
+
+    api lib['lib']
+
+    //https://lbs.amap.com/api/android-sdk/download
+    //3d地图
+    api 'com.amap.api:3dmap:latest.integration'
+    //定位
+    // api 'com.amap.api:location:latest.integration'
+    //搜索
+    api 'com.amap.api:search:latest.integration'
+}

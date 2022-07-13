@@ -1,0 +1,110 @@
+/*
+ 需要git命令行支持
+ 需要先对git进行全局设置
+ 需要至少有一次提交
+ 需要提交中至少有一次tag
+ */
+
+static def getGitCommitCount() throws IOException, NumberFormatException {
+    'git rev-list --all --count HEAD'.execute().text.toInteger()
+}
+
+//有三种情形：
+//1. 未添加任何tag               --> 返回空
+//2. 刚添加完tag                 --> 返回tag
+//3. 距离上一个tag有了至少一次提交 --> 返回完整的结构
+//如果编译时未进行提交，则2、3的返回会追加-test，否则则不会
+static def getGitDesc() throws IOException {
+    'git describe --tags --dirty="-test"'.execute().text.trim()
+}
+
+//
+// 通过tag生成发布版本, 因此, tag格式为: x.y.z(建议与当前version一致)
+//
+static def getNewestTag() {
+    'git describe --tags'.execute().text.trim()
+}
+
+static def getVersionPublish() {
+    def versionPublish = "0.0.1"
+    try {
+        versionPublish = getNewestTag().toString().replace("\"", "")
+    } catch (Exception e) {
+        e.printStackTrace()
+    }
+    return versionPublish
+}
+
+static def getVersionCode() {
+    def versionCode = 1
+    try {
+        versionCode = getGitCommitCount()
+    } catch (Exception e) {
+        e.printStackTrace()
+    }
+    return versionCode
+}
+
+static def getVersionDesc() {
+    def versionDesc = "null"
+    try {
+        return getGitDesc().toString().replace("\"", "")
+    } catch (Exception e) {
+        e.printStackTrace()
+    }
+    return versionDesc
+}
+
+//
+// tag格式为x.x.x, 但是作为版本号时只会取前两位, 第三位会被提交数自动替换
+//
+static def getVersionName() {
+    def versionName = "0.0.1"
+    try {
+        def desc = getGitDesc().toString().replace("\"", "")
+        if (!desc.isEmpty()) {
+            def isTest = desc.contains("-test")
+            desc = desc.replace("-test", "")
+            //对应刚打完tag未进行任何提交的情形
+            if (!desc.contains('-')) {
+                def split = desc.split("\\.")
+                if (split.length > 2) {
+                    versionName = split[0] + "." + split[1] + ".0"
+                } else {
+                    versionName = desc + ".0"
+                }
+            } else {
+                //进行局部匹配，返回java.util.regex.Matcher对象
+                //^: 开始符
+                //.*?: 除换行符外的可能的任意数量的字符，即到下一个字符之间的所有字符
+                //-: -
+                //\\d*: 可能的多位数字
+                def matcher = desc =~ "^.*?-\\d*"
+                if (matcher) { //调用的是matcher.find()方法
+                    versionName = matcher.group().replace('-', '.')
+
+                    def split = versionName.split("\\.")
+                    if (split.length >= 2) {
+                        versionName = split[0] + "." + split[1] + "." + split[split.length - 1]
+                    }
+                }
+            }
+            if (isTest) {
+                versionName += "-test"
+            }
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace()
+    }
+    return versionName
+}
+
+ext {
+    gitVersion = [
+            versionCode   : getVersionCode(),
+            versionName   : getVersionName(),
+            versionDesc   : getVersionDesc(),
+            versionPublish: getVersionPublish()
+    ]
+}

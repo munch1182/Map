@@ -1,0 +1,9 @@
+apply from: '../buildCom/gitversion.gradle'
+
+
+def version = gitVersion['versionPublish']
+//def versionSnapshot = version + "-SNAPSHOT"
+ext {
+    publishVersion = version
+    // publishVersion = versionSnapshot
+}

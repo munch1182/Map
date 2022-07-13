@@ -1,0 +1,24 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'com.google.devtools.ksp' version '1.7.10-1.0.6'
+}
+apply from: '../buildCom/commonbuildktx.gradle'
+
+ksp {
+    //db exportSchema = true
+    arg("room.schemaLocation", "$projectDir/schemas".toString())
+}
+
+dependencies {
+
+    implementation deps['material']
+    implementation deps['room']
+    implementation deps['roomKtx']
+    ksp deps['roomCompiler']
+
+    implementation project(':amap')
+
+    implementation lib['lib']
+    debugImplementation lib['libfast']
+}

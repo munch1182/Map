@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules xmlns:tools="http://schemas.android.com/tools">
+    <cloud-backup disableIfNoEncryptionCapabilities="true">
+        <exclude
+            path="my_prefs/device_specific_prefs"
+            tools:ignore="FullBackupContent" />
+        <exclude
+            path="downloaded/temp"
+            tools:ignore="FullBackupContent" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude
+            path="my_prefs/device_specific_prefs"
+            tools:ignore="FullBackupContent" />
+    </device-transfer>
+</data-extraction-rules>

@@ -1,0 +1,160 @@
+// 查看依赖树
+// 1. module/Gradle: Tasks-help-dependencies
+// 2. ./gradlew (名称):dependencies
+
+// 不使用buildSrc的原因是：1. 依赖并不会经常性更改，2. buildSrc会添加固定版本的kotlin依赖，与使用的版本可能会不一致
+ext {
+    Ver = [
+            compileSdk        : 31,
+            minSdk            : 23,
+            targetSdk         : 31,
+            defaultVersionCode: 1,
+            defaultVersionName: "1.0",
+
+            COMPOSE_VERSION   : "1.1.0-beta01",
+            ACTIVITY_VERSION  : "1.4.0",
+            FRAGMENT_VERSION  : "1.4.1",
+            ROOM_VERSION      : "2.4.2",
+            GLIDE_VERSION     : "4.13.1",
+            RETROFIT_VERSION  : "2.9.0",
+
+            LIFECYCLE_VERSION : "2.4.0",
+            WORK_VERSION      : "2.7.1",
+            PAGING_VERSION    : "3.1.0",
+            OKHTTP_VERSION    : "4.9.3",
+            HILT_CORE_VERSION : "2.41",
+
+            LIB_VERSION       : "0.3.7"
+    ]
+
+
+    deps = [
+
+            //https://developer.android.google.cn/jetpack/androidx/versions?hl:zh_cn
+            /*https://developer.android.google.cn/jetpack/androidx/releases/activity?hl:zh_cn*/
+            appcompat         : "androidx.appcompat:appcompat:1.4.1",
+
+            /*https://developer.android.google.cn/jetpack/androidx/releases/core*/
+            coreKtx           : "androidx.core:core-ktx:1.7.0",
+
+            /*https://github.com/material-components/material-components-android*/
+            /*https://maven.google.com/web/index.html*/
+            //include
+            material          : "com.google.android.material:material:1.5.0",
+
+            //compose
+            composeUi         : "androidx.compose.ui:ui:${Ver['COMPOSE_VERSION']}",
+            composeMaterial   : "androidx.compose.material:material:${Ver['COMPOSE_VERSION']}",
+            composeUiTool     : "androidx.compose.ui:ui-tooling-preview:${Ver['COMPOSE_VERSION']}",
+            composeActivity   : 'androidx.activity:activity-compose:1.3.1',
+
+            /*https://developer.android.google.cn/jetpack/androidx/releases/constraintlayout*/
+            constraintLayout  : "androidx.constraintlayout:constraintlayout:2.1.3",
+
+            /*https://developer.android.google.cn/jetpack/androidx/releases/cardview*/
+            cardView          : "androidx.cardview:cardview:1.0.0",
+
+            /*https://developer.android.google.cn/jetpack/androidx/releases/viewpager*/
+            viewPager         : "androidx.viewpager:viewpager:1.0.0",
+
+            /*https://developer.android.google.cn/jetpack/androidx/releases/viewpager2*/
+            viewPager2        : "androidx.viewpager2:viewpager2:1.0.0",
+
+            /*https://developer.android.google.cn/topic/libraries/app-startup*/
+            startup           : "androidx.startup:startup-runtime:1.1.1",
+
+            /*https://developer.android.google.cn/jetpack/androidx/releases/swiperefreshlayout?hl:en*/
+            swipeRefreshLayout: "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0",
+
+            /*https://developer.android.google.cn/jetpack/androidx/releases/recyclerview?hl:zh_cn*/
+            recyclerview      : "androidx.recyclerview:recyclerview:1.2.1",
+
+            /*https://developer.android.google.cn/kotlin/ktx/extensions-list?hl:zh_cn*/
+            activityKtx       : "androidx.activity:activity-ktx:${Ver['ACTIVITY_VERSION']}",
+            fragmentKtx       : "androidx.fragment:fragment-ktx:${Ver['FRAGMENT_VERSION']}",
+
+            /*https://developer.android.google.cn/jetpack/androidx/releases/lifecycle*/
+            /*https://developer.android.google.cn/kotlin/ktx?hl:zh_cn#lifecycle*/
+            lifecycleKtx      : "androidx.lifecycle:lifecycle-runtime-ktx:${Ver['LIFECYCLE_VERSION']}",
+            viewModelKtx      : "androidx.lifecycle:lifecycle-viewmodel-ktx:${Ver['LIFECYCLE_VERSION']}",
+            liveDataKtx       : "androidx.lifecycle:lifecycle-livedata-ktx:${Ver['LIFECYCLE_VERSION']}",
+
+            /*https://developer.android.google.cn/topic/libraries/architecture/workmanager/basics*/
+            /*https://developer.android.google.cn/kotlin/ktx?hl:zh_cn#workmanager*/
+            work              : "androidx.work:work-runtime:${Ver['WORK_VERSION']}",
+            workKtx           : "androidx.work:work-runtime-ktx:${Ver['WORK_VERSION']}",
+            workTest          : "androidx.work:work-testing:${Ver['WORK_VERSION']}",
+
+            /*https://developer.android.google.cn/jetpack/androidx/releases/datastore?hl=en*/
+            datastore         : "androidx.datastore:datastore-preferences:1.0.0",
+            datastoreProto    : "androidx.datastore:datastore:1.0.0",
+
+            /*https://developer.android.google.cn/jetpack/androidx/releases/room*/
+            /*https://developer.android.google.cn/kotlin/ktx?hl:zh_cn#room*/
+            room              : "androidx.room:room-runtime:${Ver['ROOM_VERSION']}",
+            roomCompiler      : "androidx.room:room-compiler:${Ver['ROOM_VERSION']}",
+            roomKtx           : "androidx.room:room-ktx:${Ver['ROOM_VERSION']}",
+            roomTest          : "androidx.room:room-testing:${Ver['ROOM_VERSION']}",
+
+            /*https://developer.android.google.cn/jetpack/androidx/releases/paging*/
+            paging            : "androidx.paging:paging-runtime:${Ver['PAGING_VERSION']}",
+            pagingTest        : "androidx.paging:paging-common:${Ver['PAGING_VERSION']}",
+
+            /*https://github.com/Kotlin/kotlinx.coroutines*/
+            coroutines        : "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0",
+
+            /*https://github.com/bumptech/glide*/
+            glide             : "com.github.bumptech.glide:glide:${Ver['GLIDE_VERSION']}",
+            glideCompiler     : "com.github.bumptech.glide:compiler:${Ver['GLIDE_VERSION']}",
+            glideIntegration  : "com.github.bumptech.glide:okhttp3-integration:${Ver['GLIDE_VERSION']}",
+
+            /*https://github.com/square/okhttp*/
+            /*https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor*/
+            okhttp            : "com.squareup.okhttp3:okhttp:${Ver['OKHTTP_VERSION']}",
+            okhttpInterceptor : "com.squareup.okhttp3:logging-interceptor:${Ver['OKHTTP_VERSION']}",
+
+            /*https://github.com/square/leakcanary*/
+            leakcanary        : "com.squareup.leakcanary:leakcanary-android:2.8.1",
+
+            /*https://github.com/square/retrofit*/
+            /*https://github.com/square/retrofit/tree/master/retrofit-converters/gson*/
+            retrofit          : "com.squareup.retrofit2:retrofit:${Ver['RETROFIT_VERSION']}",
+            retrofitGson      : "com.squareup.retrofit2:converter-gson:${Ver['RETROFIT_VERSION']}",
+
+            /*https://github.com/google/gson*/
+            gson              : "com.google.code.gson:gson:2.9.0",
+
+            /*https://dagger.dev/hilt/gradle-setup*/
+            /*https://developer.android.google.cn/training/dependency-injection/hilt-android?hl:zh_cn*/
+            /*https://developer.android.google.cn/jetpack/androidx/releases/hilt*/
+            hilt              : "com.google.dagger:hilt-android:${Ver['HILT_CORE_VERSION']}",
+            hiltCompiler      : "com.google.dagger:hilt-android-compiler:${Ver['HILT_CORE_VERSION']}",
+            hiltGradle        : "com.google.dagger:hilt-android-gradle-plugin:${Ver['HILT_CORE_VERSION']}",
+
+            /*https://github.com/guolindev/PermissionX*/
+            permissionX       : "com.guolindev.permissionx:permissionx:1.6.1",
+
+            /*https://mvnrepository.com/artifact/com.google.zxing/core*/
+            zxingCore         : "com.google.zxing:core:3.4.1",
+
+            /*https://github.com/promeG/TinyPinyin*/
+            tinyPinyin        : "com.github.promeg:tinypinyin:2.0.3",
+            tinyPinyinDic     : "com.github.promeg:tinypinyin-lexicons-android-cncity:2.0.3",
+
+            /*https://github.com/alibaba/ARouter/tree/master*/
+            aRouter           : "com.alibaba:arouter-api:1.5.2",
+            aRouterCompiler   : "com.alibaba:arouter-compiler:1.5.2",
+            aRouterRegister   : "com.alibaba:arouter-register:1.0.2",
+
+            /*https://github.com/Tencent/MMKV/blob/master/README_CN.md*/
+            mmkv              : "com.tencent:mmkv-static:1.2.12"
+    ]
+
+    lib = [
+            lib      : "com.github.munch1182.ProjectOne:lib:${Ver['LIB_VERSION']}",
+            record   : "com.github.munch1182.ProjectOne:record:${Ver['LIB_VERSION']}",
+            bluetooth: "com.github.munch1182.ProjectOne:bluetooth:${Ver['LIB_VERSION']}",
+            weight   : "com.github.munch1182.ProjectOne:weight:${Ver['LIB_VERSION']}",
+            libfast  : "com.github.munch1182.ProjectOne:libfast:${Ver['LIB_VERSION']}",
+    ]
+}

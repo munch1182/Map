@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".MainActivity"
+    tools:ignore="HardcodedText">
+
+    <TextView
+        android:id="@+id/mode"
+        style="@style/App.Fast.TextView.Normal"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:gravity="start|center_vertical"
+        android:text="MODE:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkedButton="@id/mode_def"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/mode"
+        app:layout_constraintStart_toEndOf="@id/mode"
+        app:layout_constraintTop_toTopOf="@id/mode">
+
+        <RadioButton
+            android:id="@+id/mode_def"
+            style="@style/App.Fast.TextView.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="DEF" />
+
+        <RadioButton
+            android:id="@+id/mode_gps"
+            style="@style/App.Fast.TextView.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="GPS" />
+
+        <RadioButton
+            android:id="@+id/mode_net"
+            style="@style/App.Fast.TextView.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="NET" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/interval"
+        style="@style/App.Fast.TextView.Normal"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:gravity="start|center_vertical"
+        android:text="INTERVAL:"
+        app:layout_constraintStart_toStartOf="@id/mode"
+        app:layout_constraintTop_toBottomOf="@id/mode" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkedButton="@id/interval1"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/interval"
+        app:layout_constraintStart_toEndOf="@id/interval"
+        app:layout_constraintTop_toTopOf="@id/interval">
+
+        <RadioButton
+            android:id="@+id/interval1"
+            style="@style/App.Fast.TextView.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="1s" />
+
+        <RadioButton
+            android:id="@+id/interval3"
+            style="@style/App.Fast.TextView.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="3s" />
+
+        <RadioButton
+            android:id="@+id/interval5"
+            style="@style/App.Fast.TextView.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="5s" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/interval" />
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

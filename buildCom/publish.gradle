@@ -1,0 +1,36 @@
+apply from: '../buildCom/publishversion.gradle'
+
+
+// 因为version使用gitVersion, 所以正式版发表时需要使用tag, tag格式为: x.y.z(建议与当前version一致)
+// 执行publish
+// MavenLocal路径: $USER_HOME/.m2/repository
+// ./gradlew lib:publish;./gradlew record:publish;./gradlew weight:publish;./gradlew bluetooth:publish;./gradlew libfast:publish
+
+
+apply plugin: 'maven-publish'
+
+android {
+    publishing {
+        singleVariant('release') { withSourcesJar() }
+    }
+}
+
+//Gradle - task
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                //release根据buildType
+                //aar
+                from components['release']
+                groupId = "com.munch.lib"
+                // artifactId = "" //自动跟随lib名
+                version = publishVersion
+            }
+        }
+        repositories {
+            // maven { url uri('../repository') }
+            mavenLocal()
+        }
+    }
+}
