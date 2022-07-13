@@ -8,4 +8,4 @@
 .externalNativeBuild
 .cxx
 local.properties
-#./key/key.properties
+./key/key.properties
