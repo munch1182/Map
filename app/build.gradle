@@ -5,6 +5,16 @@ plugins {
 }
 apply from: '../buildCom/commonbuildktx.gradle'
 
+android {
+
+    defaultConfig {
+
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+    }
+}
+
 ksp {
     //db exportSchema = true
     arg("room.schemaLocation", "$projectDir/schemas".toString())
@@ -20,5 +30,5 @@ dependencies {
     implementation project(':amap')
 
     implementation lib['lib']
-    debugImplementation lib['libfast']
+    implementation lib['libfast']
 }
