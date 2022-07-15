@@ -5,9 +5,18 @@ import androidx.room.*
 import com.munch.lib.AppHelper
 import com.munch.lib.amap.Location
 import com.munch.lib.extend.SingletonHolder
-import com.munch.lib.helper.data.SpHelper
-import com.munch.lib.record.Record
 import kotlinx.coroutines.flow.Flow
+
+@Entity(tableName = "tb_sport_id")
+data class SportIdRecord(
+    @PrimaryKey(autoGenerate = true)
+    var id: Int,
+    var count: Int = 0,
+    @ColumnInfo(name = "s_time")
+    var startTime: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "e_time")
+    var endTime: Long = 0
+)
 
 @Entity(tableName = "tb_address")
 data class AddressRecord(
@@ -48,14 +57,48 @@ interface AddressDao {
     @Query("SELECT * FROM tb_address WHERE :id = id")
     fun queryAllFlowById(id: Int): Flow<AddressRecord>
 
+    @Query("SELECT COUNT(*) FROM tb_address WHERE :id = id")
+    fun queryAddressCountBy(id: Int): Int
+
     @Query("DELETE FROM tb_address WHERE :id = id")
-    suspend fun del(id: Int)
+    suspend fun delAddressById(id: Int)
+
+    @Query("DELETE FROM tb_sport_id WHERE :id = id")
+    suspend fun delSportId(id: Int)
+
+    @Transaction
+    suspend fun del(id: Int) {
+        delAddressById(id)
+        delSportId(id)
+    }
 
     @Insert
     suspend fun add(record: AddressRecord)
+
+    @Query("SELECT MAX(id) FROM tb_sport_id")
+    suspend fun getSportID(): Int
+
+    @Query("SELECT * FROM tb_sport_id ORDER BY id DESC")
+    suspend fun querySportId(): List<SportIdRecord>
+
+    @Query("SELECT count(*) FROM tb_sport_id")
+    fun getSportIDCount(): Flow<Int>
+
+    @Insert
+    suspend fun addSport(sport: SportIdRecord)
+
+    @Query("SELECT * from tb_sport_id where id == :id")
+    suspend fun getSportIdById(id: Int): SportIdRecord?
+
+    @Update
+    suspend fun updateSport(sport: SportIdRecord)
 }
 
-@Database(entities = [AddressRecord::class], version = AddressDB.VERSION_22_07_12, exportSchema = true)
+@Database(
+    entities = [AddressRecord::class, SportIdRecord::class],
+    version = AddressDB.VERSION_22_07_12,
+    exportSchema = true
+)
 abstract class AddressDatabase : RoomDatabase() {
 
     abstract fun addressDao(): AddressDao
@@ -79,16 +122,5 @@ class AddressDB private constructor(app: Application) {
     val record: AddressDao = db.addressDao()
 }
 
-object Record : AddressDao by AddressDB.getInstance(AppHelper.app).record {
-
-    private const val KEY_ID = "KEY_ID"
-
-    fun getSportID(): Int {
-        return SpHelper.getSp().get(KEY_ID, 0) ?: 0
-    }
-
-    fun nextSportID() {
-        SpHelper.getSp().plus(KEY_ID, 1, 0)
-    }
-}
+object Record : AddressDao by AddressDB.getInstance(AppHelper.app).record
 

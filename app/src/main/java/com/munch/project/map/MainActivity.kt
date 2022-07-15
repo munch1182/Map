@@ -12,10 +12,14 @@ import com.munch.lib.amap.PermissionHelper
 import com.munch.lib.extend.bind
 import com.munch.lib.extend.init
 import com.munch.lib.extend.lazy
+import com.munch.lib.extend.postUI
 import com.munch.lib.fast.base.BaseFastActivity
+import com.munch.lib.helper.NetHelper
+import com.munch.lib.helper.ThreadHelper
 import com.munch.project.map.AddressRecord.Companion.into
 import com.munch.project.map.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
@@ -24,34 +28,89 @@ class MainActivity : BaseFastActivity(), OnLocationUpdateListener {
 
     private val bind by bind<ActivityMainBinding>()
     private val loc by lazy { LocationHelper() }
+    private val netHelper by lazy { NetHelper.getInstance(ctx) }
+    private val executor by lazy { ThreadHelper.newCachePool() }
+
     private var sportId = 0
+    private var isLocation = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bind.init()
         AppHelper.init(application)
 
-        lifecycleScope.launch {
-            PermissionHelper.updatePrivacy()
-            if (PermissionHelper.checkOrRequest(this@MainActivity)) {
-                loc.add(this@MainActivity)
-                bind.start.tag = false
-                bind.start.setOnClickListener {
-                    val b = it.tag as? Boolean == true
-                    if (b) {
-                        bind.start.text = "START"
-                        bind.desc.text = "stop location"
-                        loc.stop()
-                        Record.nextSportID()
-                        index.set(0)
-                    } else {
-                        bind.start.text = "STOP"
-                        sportId = Record.getSportID()
-                        bind.desc.text = "start location"
-                        loc.start(true, generateOpt())
+        netHelper.observe(this) { showNetDesc() }
+        bind.modeNet.setOnCheckedChangeListener { _, _ -> showNetDesc() }
+        bind.modeDef.setOnCheckedChangeListener { _, _ -> showNetDesc() }
+
+        bind.count.setOnClickListener {
+            SportDialog().show(supportFragmentManager, null)
+        }
+
+        loc.set(this, this)
+
+        bind.start.setOnClickListener {
+            lifecycleScope.launch {
+                PermissionHelper.updatePrivacy()
+                if (PermissionHelper.checkOrRequest(this@MainActivity)) {
+                    bind.start.isEnabled = true
+                    lifecycleScope.launch(Dispatchers.IO) a@{
+                        val b = isLocation
+
+                        if (b) {
+                            postUI {
+                                bind.start.text = "START"
+                                bind.desc.text = "stop location"
+                            }
+
+                            loc.stop()
+                            index.set(0)
+                            val sport = Record.getSportIdById(sportId)
+                            if (sport != null) {
+                                sport.count = Record.queryAddressCountBy(sport.id)
+                                sport.endTime = System.currentTimeMillis()
+                                Record.updateSport(sport)
+                            }
+                        } else {
+                            postUI {
+                                bind.start.text = "STOP"
+                                bind.desc.text = "start location"
+                            }
+
+                            sportId = Record.getSportID() + 1
+                            Record.addSport(SportIdRecord(sportId))
+                            loc.start(true, generateOpt())
+                         }
+                        isLocation = !isLocation
+
+                        withContext(Dispatchers.Main) { bind.count.isEnabled = !isLocation }
                     }
-                    bind.start.tag = !b
                 }
+            }
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            Record.getSportIDCount()
+                .collectLatest {
+                    postUI {
+                        bind.count.text = "当前共有 $it 次运动."
+                        bind.count.isEnabled = it > 0 && !isLocation
+                    }
+                }
+        }
+    }
+
+    private fun showNetDesc() {
+        postUI {
+            if (bind.modeNet.isChecked || bind.modeDef.isChecked) {
+                val it = netHelper.curr
+                if (it == null) {
+                    bind.descNet.text = "当前没有网络连接"
+                } else {
+                    bind.descNet.text = "当前正在使用 ${netHelper.getName(it)}"
+                }
+            } else {
+                bind.descNet.text = ""
             }
         }
     }
@@ -97,4 +156,7 @@ class MainActivity : BaseFastActivity(), OnLocationUpdateListener {
         loc.destroy()
     }
 
+    override fun updateViewColor() {
+        /*super.updateViewColor()*/
+    }
 }

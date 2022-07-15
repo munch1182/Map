@@ -63,7 +63,6 @@ class LocationHelper(private val context: Context = AppHelper.ctx) : AMapLocatio
     }
 
     private fun getNotification(): Notification {
-
         val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channelId = AppHelper.ctx.packageName
             val channel =
@@ -92,10 +91,10 @@ class LocationHelper(private val context: Context = AppHelper.ctx) : AMapLocatio
     fun stop() {
         isKeepLocation = false
         client?.stopLocation()
+        destroy()
     }
 
     override fun destroy() {
-        super.destroy()
         client?.onDestroy()
         client = null
     }
