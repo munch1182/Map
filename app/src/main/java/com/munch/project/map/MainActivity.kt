@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.random.Random
 
 class MainActivity : BaseFastActivity(), OnLocationUpdateListener {
 
@@ -80,7 +81,7 @@ class MainActivity : BaseFastActivity(), OnLocationUpdateListener {
                             sportId = Record.getSportID() + 1
                             Record.addSport(SportIdRecord(sportId))
                             loc.start(true, generateOpt())
-                         }
+                        }
                         isLocation = !isLocation
 
                         withContext(Dispatchers.Main) { bind.count.isEnabled = !isLocation }
@@ -146,7 +147,7 @@ class MainActivity : BaseFastActivity(), OnLocationUpdateListener {
             Record.add(l)
             withContext(Dispatchers.Main) {
                 bind.desc.text =
-                    "${index.getAndIncrement()}: (${l.longitude}, ${l.latitude}, ${l.altitude})"
+                    "${index.getAndIncrement()}:\n${l.longitude}\n${l.latitude}\n${l.altitude}"
             }
         }
     }

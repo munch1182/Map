@@ -97,14 +97,6 @@
             android:text="5s" />
     </RadioGroup>
 
-    <TextView
-        android:id="@+id/desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/start"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/interval" />
 
     <TextView
         android:id="@+id/desc_net"
@@ -118,6 +110,15 @@
         app:layout_constraintTop_toBottomOf="@id/interval"
         tools:text="正在使用 移动网络" />
 
+    <TextView
+        android:id="@+id/desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="30dp"
+        app:layout_constraintBottom_toTopOf="@id/start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/desc_net" />
 
     <Button
         android:id="@+id/start"
